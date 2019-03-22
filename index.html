@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+    <link rel="stylesheet" href="base.css">
+    <script src="http://libs.baidu.com/jquery/2.0.0/jquery.js"></script>
+    <script>
+        $(function () {
+            $("#city").focus()
+            $("#btn1").click(function () {
+                let city = $("#city").val()
+                if(!city){
+                    return
+                }
+                $("#city").val('')
+                $(".smallbox").css("display","none")
+                $("#box1").css("display","none")           
+                $.ajax({
+                    url:'http://api.jisuapi.com/weather/city',
+                    data:{appkey:'5c5eac5030bbbf13'},
+                    dataType:'jsonp',
+                    success:function(data){
+                        let arr = data.result
+                        let reg = new RegExp(""+city+"")                       
+                        let city1 = arr.find((item)=>{
+                            return reg.test(item.city)
+                        })
+                        if(!city1){
+                            alert('请输入正确的城市名')
+                            return
+                        }
+                        $.ajax({
+                            url:"http://api.jisuapi.com/weather/query",
+                            data:{appkey:'5c5eac5030bbbf13',cityid:city1.cityid},
+                            dataType:'jsonp',
+                            success:function (data) {
+                                show(data)
+                            },
+                            error:function(){
+                                alert('查询失败，请重新查询')
+                            }
+                        })
+                        
+                    },
+                    error:function(){
+                        alert('查询失败，请重新查询')
+                    }
+                })
+                
+                
+            })
+    })
+    function show(data){
+        let pic = `<img src="../chinaCtiyWeather/icon/weathercn/${data.result.img}.png" alt="${data.result.weather}">`
+        let tag = `<span>${data.result.city}</span><span class="line">|</span><span>${data.result.date}</span><span class="line">|</span><span>${data.result.week}</span><span class="line">|</span><span>${data.result.weather}</span>`
+        $("#info1").html(tag)
+        $("#todaypic").html(pic)
+        tag = `<p>今日温度：${data.result.temphigh}℃/${data.result.templow}℃  风力：${data.result.windpower}  风向：${data.result.winddirect}  风速：${data.result.windspeed}</p>`
+        $("#info2").html(tag)
+        tag = `<p>紫外线强度：${data.result.index[2].ivalue} 运动指数：${data.result.index[1].ivalue} 感冒指数：${data.result.index[3].ivalue} 穿衣指数：${data.result.index[6].ivalue}</p>`
+        $("#info3").html(tag)
+        $("#box1").slideDown(1000,function(){
+            let tag = ''
+            let arr = $(".smallbox")
+            for (let index = 0; index < arr.length; index++) {
+            tag = `<img src="../chinaCtiyWeather/icon/weathercn/${data.result.daily[index+1].day.img}.png" alt="${data.result.daily[index+1].day.weather}">
+                <p>${data.result.daily[index+1].date}</p>
+                <p>${data.result.daily[index+1].week}</p>
+                <p>${data.result.daily[index+1].day.weather}</p>
+                <p>${data.result.daily[index+1].day.temphigh}℃/${data.result.daily[index+1].night.templow}℃</p>
+                `
+            $("#smallbox"+index).html(tag) 
+            
+            }
+            $(".smallbox").slideDown(1000)
+        })
+    }
+
+    
+
+    </script>
+</head>
+<body>
+    <header>
+        <h1>WEATHER</h1>
+        <div id="searchCity">
+            <input type="text" id="city" placeholder="请输入城市名字">
+            <span><input type="button" value="查询天气" id="btn1"></span>
+        </div>
+    </header>
+    <div id="container">
+        <div id="box1">
+            <div id="todaypic"><img src="../chinaCtiyWeather/icon/weathercn/1.png" alt="多云"></div>
+            <div id="info1"><span>北京</span><span class="line">|</span><span>2019-03-13</span><span class="line">|</span><span>星期三</span><span class="line">|</span><span>多云</span></div>
+            <div id="info2"><p>今日温度：16℃/2℃  风力：3-4级转3-4级  风向：西北风转北风  风速：--</p></div>
+            <div id="info3"><p>紫外线强度：---洗车指数：---感冒指数：---穿衣指数：---</p></div>
+        </div>
+        <div id="box2">
+            <div class="smallbox" id="smallbox0">
+                <div><img src="../chinaCtiyWeather/icon/weathercn/1.png" alt="多云"></div>
+                <p>2019-03-14</p>
+                <p>星期四</p>
+                <p>中雨转小到中雨</p>
+                <p>20℃/13℃</p>
+            </div>
+            <div class="smallbox" id="smallbox1">
+                <div><img src="../chinaCtiyWeather/icon/weathercn/1.png" alt="多云"></div>
+                <p>2019-03-14</p>
+                <p>星期四</p>
+                <p>中雨转小到中雨</p>
+                <p>20℃/13℃</p>
+            </div>
+            <div class="smallbox" id="smallbox2">
+                <div><img src="../chinaCtiyWeather/icon/weathercn/1.png" alt="多云"></div>
+                <p>2019-03-14</p>
+                <p>星期四</p>
+                <p>中雨转小到中雨</p>
+                <p>20℃/13℃</p>
+            </div>
+            <div class="smallbox" id="smallbox3">
+                <div><img src="../chinaCtiyWeather/icon/weathercn/1.png" alt="多云"></div>
+                <p>2019-03-14</p>
+                <p>星期四</p>
+                <p>中雨转小到中雨</p>
+                <p>20℃/13℃</p>
+            </div>
+            <div class="smallbox" id="smallbox4">
+                <div><img src="../chinaCtiyWeather/icon/weathercn/1.png" alt="多云"></div>
+                <p>2019-03-14</p>
+                <p>星期四</p>
+                <p>中雨转小到中雨</p>
+                <p>20℃/13℃</p>
+            </div>
+        </div>
+    </div>
+    
+</body>
+</html>
